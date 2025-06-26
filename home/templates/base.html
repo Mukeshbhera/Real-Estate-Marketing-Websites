@@ -1,0 +1,179 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Vrindavan</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  {% comment %} <link href="{% static 'assets/img/favicon.png' %}" rel="icon"> {% endcomment %}
+  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+
+  
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/aos/aos.css" rel="stylesheet' %}">
+  <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css">
+
+  <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .radius-8 {
+      border-radius: 8px;
+    }
+    
+  </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css">
+  <style>
+    .center-brand {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .light-logo {
+      width: 30px; /* Adjust the width as needed */
+      height: auto; /* Maintain aspect ratio */
+      margin-left: 1px; /* Optional: Add space between the brand name and logo */
+    }
+
+    .navbar .form-control,
+    .navbar .btn {
+      margin-left: auto;
+    }
+  </style>
+<style>
+  .custom-modal {
+    max-width: 600px; /* Adjust the width as needed */
+    width: 100%; /* Ensure it takes full width on smaller screens */
+}
+</style>
+</head>
+
+<body class="index-page">
+  <header id="header" class="sticky-top">
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <div class="row w-100">
+        <div class="col d-flex align-items-center" style="font-weight: bold;" >Today Time 
+          <span id="current-time" class="me-3"></span>
+          </div>
+          <div class="col-6 d-flex justify-content-center align-items-center">
+            <img src="{% static 'assets/img/logo_new.png' %}" alt="site logo" class="light-logo" style="width: 70px;">
+            <a href="{% url 'index' %}" class="navbar-brand ms-2" style="font-weight: bold; font-size: 40px;">Vrindavan Real Estate</a>
+        </div>
+      <div class="col d-flex justify-content-end align-items-center">
+        <form class="d-flex">
+            <input class="form-control me-2" id="searchInput1" name="search1" type="search" onkeyup="searchTable1()" placeholder="Search" aria-label="Search">
+            <a href="{% url 'logout' %}"><button class="btn btn-outline-success" type="button">Logout</button></a>
+        </form>
+    </div>
+  </div>
+</div>
+  </nav>
+    
+  </header>
+  {% comment %} d-flex justify-content-center align-items-center" {% endcomment %}
+
+  <main class='main'>
+    
+  {% block content %}
+
+  {% endblock %}
+  </main>
+  <footer id="footer" class="footer dark-background">
+
+
+
+  </footer>
+
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+</body>
+
+</html>
+{% comment %} <script>
+  function searchTable() {
+    var input, filter, table, tr, td, i, j, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 1; i < tr.length; i++) { // start at 1 to skip the header row
+      tr[i].style.display = "none"; // hide the row initially
+
+      td = tr[i].getElementsByTagName("td");
+      for (j = 0; j < td.length; j++) {
+        if (td[j]) {
+          txtValue = td[j].textContent || td[j].innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+            break; // break the inner loop if a match is found
+          }
+        }
+      }
+    }
+  }
+</script> {% endcomment %}
+
+<script>
+  function updateTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const currentTimeString = `${hours}:${minutes}:${seconds}`;
+      document.getElementById('current-time').textContent = currentTimeString;
+  }
+
+  setInterval(updateTime, 1000); // Update the time every second
+  updateTime(); // Initial call to set the time immediately
+</script>
+
+<script>
+  function searchTable1() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("searchInput1");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 1; i < tr.length; i++) { // start at 1 to skip the header row
+      tr[i].style.display = "none"; // hide the row initially
+      td = tr[i].getElementsByTagName("td");
+      
+      for (j = 0; j < td.length; j++) { // iterate over all columns
+        if (td[j]) {
+          txtValue = td[j].textContent || td[j].innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = ""; // show the row if a match is found
+            break; // break the inner loop if a match is found
+          }
+        }
+      }
+    }
+  }
+
+
+</script>
+
+

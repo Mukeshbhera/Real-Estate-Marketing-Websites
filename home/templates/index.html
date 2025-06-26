@@ -1,0 +1,529 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+  <main class='main'>
+        
+      <div class="card h-100 p-0 radius-12" style="height:100%">
+          <div class="card-body p-24">
+              <div class="row justify-content-center">
+                  <div class="col-xxl-15 col-xl-110 col-lg-50" style="height:100%">
+                      <div class="card border">
+                          <div class="card-body">
+                              {% if messages %}
+                                  {% for message in messages %}
+                                      <div class="alert alert-success">
+                                          {{ message }}
+                                      </div>
+                                  {% endfor %}
+                              {% endif %}
+                              
+
+                              
+                          <form method="POST" action="{% url 'index' %}">
+                            {% csrf_token %}
+                            <div class="modal-body" style="text-align: left;">
+                                <div class="row" style="margin-top: 10px;">
+                                    <!-- Ensure these fields match those in your view -->
+                                    <div class="col">
+                                        <label class="form-label">Team Leader Name</label>
+                                        <input type="text" id="form-team-lead" class="form-control radius-8" placeholder="Team Leader Name" style="width: 100%;" maxlength="20" required name="team_leader_name">
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Associate Name</label>
+                                        <input type="text" id="form-associate-name" class="form-control radius-8" placeholder="Associate Name" style="width: 100%;" maxlength="20" required name="associate_name">
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Mobile</label>
+                                        <input type="tel" class="form-control radius-8" placeholder="Mobile" style="width: 100%;" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" pattern="[0-9]{10}" required name="mobile">
+                                    </div>
+                                
+                                    <div class="col">
+                                        <label class="form-label">Project Name</label>
+                                        <select class="form-control radius-8" id="project" name="project" required>
+                                            <option value="">Select Project</option>
+                                            {% for project in projects %}
+                                                <option value="{{ project.id }}">{{ project.project_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Platform Name</label>
+                                        <select class="form-control radius-8" id="platform" name="platform" required>
+                                            <option value="">Select Project</option>
+                                            {% for platform in platforms %}
+                                                <option value="{{ platform.id }}">{{ platform.platform_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" class="form-control radius-8" placeholder="username" style="width: 100%;" maxlength="20" required name="username">
+                                    </div>
+                                </div>
+                                    <div class="row" style="margin-top: 10px;">
+                                    
+                                    <div class="col">
+                                        <label class="form-label">Password</label>
+                                        <input type="text" class="form-control radius-8" placeholder="password" style="width: 100%;" maxlength="20" required name="password">
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Total Price</label>
+                                        <input type="number" class="form-control radius-8" name="total_price" placeholder="Total Price" style="width: 100%;" oninput="calculateValues()" required>
+                                    </div>
+                                    <div class="col" hidden>
+                                        <label class="form-label">Total Amount</label>
+                                        <input type="number" class="form-control radius-8" name="sum_amount" placeholder="Total Amount" style="width: 100%;" oninput="calculateValues()" required>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Leads</label>
+                                        <input type="number" class="form-control radius-8" placeholder="leads" style="width: 100%;" maxlength="20" required name="leads">
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Start Date</label>
+                                        <input type="date" class="form-control radius-8" name="start_date" style="width: 100%;" required>
+                                    </div> 
+                                    <div class="col">
+                                        <label class="form-label">End Date</label>
+                                        <input type="date" class="form-control radius-8" name="end_date" style="width: 100%;" required>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row" style="margin-top: 10px;">
+                                    <div class="d-flex align-items-center justify-content-center gap-3">
+                                        <input type="submit" id="add_record" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                    </div>
+                                </div>
+                            </div>
+                          </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+  
+    <div class="container-fluid">
+      <div class="dashboard-main-body">
+            <div class="d-flex align-items-center mb-24" style="gap: 10px;">
+              <h6 class="fw-semibold mb-0">Customers</h6>
+              <form class="d-flex" onsubmit="searchTable2(); return false;">
+                <input class="form-control me-2" id="searchInput2" name="search2" type="search" onkeyup="searchTable2()" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            <form id="exportForm" method="POST" action="{% url 'export_users' %}">
+                {% csrf_token %}
+                <button type="button" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8"  onclick="submitExportForm()">Export to CSV</button>
+            </form>
+            </div>
+          <div class="card h-100 p-0 radius-12">
+              
+              <div class="card-body p-24">
+                  <div class="table-responsive scroll-sm">
+                      {% if messages %}
+                      {% for message in messages %}
+                      <div class="alert alert-success">
+                          {{ message }}
+                      </div>
+                      {% endfor %}
+                      {% endif %}
+                     
+                    
+                      <table class="table table-bordered table-striped" id="myTable">
+                          <thead>
+                              <tr>
+                                  <th><input type="checkbox" id="select-all"></th>
+                                  <th>Team_Leader</th>
+                                  <th>Associate</th>
+                                  <th>Mobile</th>
+                                  <th>Project</th>
+                                  <th>Platform</th>
+                                  <th>Username</th>
+                                  <th>Password</th>
+                                  <th>Amount</th>
+                                  {% comment %} <th>Amount</th> {% endcomment %}
+                                  <th>Leads</th>
+                                  <th>Start_Date</th>
+                                  <th>End_Date</th>
+                                  <th>Create_Date</th>
+                                  <th>Details</th>
+                                  <th>Pay_Details</th>
+
+
+                                </tr>
+                          </thead>
+                          <tbody id="myTable">
+                              {% for user in users %}
+                              <tr id="user-{{user.id}}">
+                                <td><input type="checkbox" class="select-checkbox" name="selected_ids" value="{{ user.id }}"></td>
+                                  <td class="team_leader_name userData" name="team_leader_name">{{ user.team_leader_name }}</td>
+                                  <td class="associate_name userData" name="associate_name">{{ user.associate_name }}</td>
+                                  <td class="mobile userData" name="mobile">{{ user.mobile }}</td>
+                                  <td class="project_name userData" name="project_name">{{ user.project.project_name }}</td>
+                                  <td class="platform_name userData" name="platform_name">{{ user.platform.platform_name }}</td>
+                                  <td class="username userData" name="username">{{ user.username }}</td>
+                                  <td class="password userData" name="password">{{ user.password }}</td>
+                                  <td class="sum_amount userData" name="sum_amount">{{ user.sum_amount }}</td>
+                                  {% comment %} <td class="total_price userData" name="total_price">{{ user.total_price }}</td> {% endcomment %}
+                                  <td class="leads userData" name="leads">{{ user.leads }}</td>
+                                  <td class="start_date userData" name="discount">{{ user.start_date }}</td>
+                                  <td class="end_date userData" name="agreement_values">{{ user.end_date }}</td>
+                                  <td>{{ user.created_date|date:"Y-m-d"}}</td>
+                                <td>
+                                    <button type="button" id="editButton"  class="btn btn-primary" data-bs-toggle="modal" 
+                                    data-bs-target="#exampleModal" onClick="editUser({{user.id}})">
+                                    Details
+                                      </button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'payment_details' user.id %}">
+                                        <button type="button" class="btn btn-primary">
+                                            Payment
+                                        </button>
+                                    </a>
+                                </td>
+                              </tr>
+                              {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog custom-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="modal-body" style="text-align: left;">
+                        <div class="row" style="margin-top: 10px;">
+                            <input class="form-control" id="form-id" type="hidden" name="formId"/>
+                            <div class="col">
+                                <label class="form-label">Team_Leader_Name</label>
+                                <input type="text" id="form-team-lead" class="form-control radius-8" placeholder="Team Leader Name" style="width: 100%;" maxlength="200" required name="team_leader_name" readonly>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Associate Name</label>
+                                <input type="text" id="form-associate-name" class="form-control radius-8" placeholder="Associate Name" style="width: 100%;" maxlength="200" required name="associate_name" readonly>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Mobile</label>
+                                <input type="text" id="form-mobile" class="form-control radius-8" placeholder="Mobile" style="width: 100%;" maxlength="13" required name="mobile" readonly>
+                            </div>
+                            <div>
+                            <div class="row" style="margin-top: 10px;">
+                            <div class="col">
+                                <label class="form-label">Username</label>
+                                <input type="text" id="form-username" class="form-control radius-8" placeholder="Username" style="width: 100%;" maxlength="200" required name="username" readonly>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Password</label>
+                                <input type="text" id="form-password" class="form-control radius-8" placeholder="Password" style="width: 100%;" maxlength="200" required name="password" readonly>
+                            </div>
+                            <div class="col" hidden>
+                                <label class="form-label">sum_amount</label>
+                                <input type="number" id="form-sum-amount" class="form-control radius-8" placeholder="sum_amount" style="width: 100%;" maxlength="13" required name="sum_amount">
+                            </div>
+                        </div>
+                            {% comment %} <div class="border" style="margin-top: 15px; margin-bottom: 15px;"></div> {% endcomment %}
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label class="form-label">Project Name</label>
+                                    <select class="form-control radius-8" id="form-project" name="project" required>
+                                        <option value="">Select Project</option>
+                                        {% for project in projects %}
+                                            <option value="{{ project.id }}">{{ project.project_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">Platform Name</label>
+                                    <select class="form-control radius-8" id="form-platform" name="platform" required>
+                                        <option value="">Select Platform</option>
+                                        {% for platform in platforms %}
+                                            <option value="{{ platform.id }}">{{ platform.platform_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col" id="form-total-price-container">
+                                    <label class="form-label">Amount</label>
+                                    <input type="number" id="form-total-price" class="form-control radius-8" name="total_price" placeholder="Cash Amount" style="width: 100%;" required>
+                                    <input type="number" id="form-total-price1"class="form-control radius-8" name="total_price" placeholder="Cash Amount" style="width: 100%;" hidden> 
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label class="form-label">Leads</label>
+                                    <input type="number" id="form-leads" class="form-control radius-8" name="leads" placeholder="Leads" style="width: 100%;" required>
+                                </div>
+                                <div class="col">
+                                    <label   label class="form-label">Start Date</label>
+                                    <input type="date" id="form-start-date" class="form-control radius-8" name="start_date" style="width: 100%;"  required>
+                                </div> 
+                                <div class="col">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" id="form-end-date" class="form-control radius-8" name="end_date" style="width: 100%;"  required>
+                                </div>
+                            </div>
+                            {% comment %} <div> {% endcomment %}
+                            {% comment %} </div> {% endcomment %}
+                               
+                            
+                            
+                            {% comment %} </div> {% endcomment %}
+                            
+                        </div>
+                        
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="d-flex align-items-center justify-content-center gap-3">
+                                <input type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-6">
+                                <button type="button" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-6" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function editUser(id) {
+        $.ajax({
+            url: `/edit-record/${id}/`,
+            type: 'GET',
+            success: function(data) {
+                console.log(data); 
+                $('#form-id').val(data.id);
+                $('#form-team-lead').val(data.team_leader_name);
+                $('#form-associate-name').val(data.associate_name);
+                $('#form-mobile').val(data.mobile);
+                $('#form-sum-amount').val(data.sum_amount);
+                $('#form-project').val(data.project); 
+                $('#form-platform').val(data.platform); 
+                $('#form-username').val(data.username);
+                $('#form-password').val(data.password);
+                $('#form-total-price').val(data.total_price);
+                $('#form-leads').val(data.leads);
+                $('#form-start-date').val(data.start_date);
+                $('#form-end-date').val(data.end_date);
+                $('#exampleModal').modal('show');
+            },
+            error: function(response) {
+                alert('An error occurred while fetching the data.');
+            }
+        });
+    }
+
+    $('#exampleModal form').on('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            id: $('#form-id').val(),
+            team_leader_name: $('#form-team-lead').val(),
+            associate_name: $('#form-associate-name').val(),
+            mobile: $('#form-mobile').val(),
+            sum_amount: $('#form-sum-amount').val(),
+            project: $('#form-project').val(), 
+            platform: $('#form-platform').val(), 
+            username: $('#form-username').val(),
+            password: $('#form-password').val(),
+            total_price: $('#form-total-price').val(),
+            leads: $('#form-leads').val(),
+            start_date: $('#form-start-date').val(),
+            end_date: $('#form-end-date').val(),
+        };
+
+        $.ajax({
+            url: `/update-record/`,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === "200") {
+                    $('#exampleModal').modal('hide');
+                    alert(response.message);
+                    location.reload(); 
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(response) {
+                alert('An error occurred. Please try again.');
+            }
+        });
+    });
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function editUser(id) {
+        $.ajax({
+            url: `/edit-record/${id}/`,
+            type: 'GET',
+            success: function(data) {
+                console.log(data); 
+                $('#form-id').val(data.id);
+                $('#form-team-lead').val(data.team_leader_name);
+                $('#form-associate-name').val(data.associate_name);
+                $('#form-mobile').val(data.mobile);
+                $('#form-sum-amount').val(data.sum_amount);
+                $('#form-project').val(data.project.id); 
+                $('#form-platform').val(data.platform.id);
+                $('#form-username').val(data.username);
+                $('#form-password').val(data.password);
+                $('#form-total-price').val(data.total_price);
+                $('#form-leads').val(data.leads);
+                $('#form-start-date').val(data.start_date);
+                $('#form-end-date').val(data.end_date);
+                $('#exampleModal').modal('show');
+            },
+            error: function(response) {
+                alert('An error occurred while fetching the data.');
+            }
+        });
+    }
+
+    $('#exampleModal form').on('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            id: $('#form-id').val(),
+            team_leader_name: $('#form-team-lead').val(),
+            associate_name: $('#form-associate-name').val(),
+            mobile: $('#form-mobile').val(),
+            sum_amount: $('#form-sum-amount').val(),
+            project: $('#form-project').val(),
+            platform: $('#form-platform').val(),
+            username: $('#form-username').val(),
+            password: $('#form-password').val(),
+            total_price: $('#form-total-price').val(),
+            leads: $('#form-leads').val(),
+            start_date: $('#form-start-date').val(),
+            end_date: $('#form-end-date').val(),
+        };
+
+        $.ajax({
+            url: `/update-record/`,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}' 
+            },
+            success: function(response) {
+                if (response.status === "200") {
+                    $('#exampleModal').modal('hide');
+                    alert(response.message);
+                    location.reload();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(response) {
+                alert('An error occurred. Please try again.');
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    document.getElementById("select-all").addEventListener("change", function() {
+        var checkboxes = document.getElementsByClassName("select-checkbox");
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = this.checked;
+        }
+    });
+
+    function searchTable2() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById("searchInput2");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) { 
+            tr[i].style.display = "none"; 
+            td = tr[i].getElementsByTagName("td");
+            
+            for (j = 0; j < td.length; j++) { 
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                        break; 
+                    }
+                }
+            }
+        }
+    }
+
+    function submitExportForm() {
+        var form = document.getElementById("exportForm");
+        var checkboxes = document.getElementsByClassName("select-checkbox");
+        var selectedIds = [];
+
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked && checkboxes[i].closest('tr').style.display !== 'none') {
+                selectedIds.push(checkboxes[i].value);
+            }
+        }
+
+        if (selectedIds.length > 0) {
+            for (var i = 0; i < selectedIds.length; i++) {
+                var hiddenField = document.createElement("input");
+                hiddenField.type = "hidden";
+                hiddenField.name = "selected_ids";
+                hiddenField.value = selectedIds[i];
+                form.appendChild(hiddenField);
+            }
+        }
+        
+        form.submit();
+    }
+</script> 
+
+
+<script>
+    document.getElementById('form-associate-name').addEventListener('input', function() {
+        var associateName = this.value;
+        if (associateName.length > 0) {
+            fetch(`/get-team-leader-name/?associate_name=${associateName}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.team_leader_name) {
+                        document.getElementById('form-team-lead').value = data.team_leader_name;
+                    } else {
+                        document.getElementById('form-team-lead').value = '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('form-team-lead').value = '';
+                });
+        } else {
+            document.getElementById('form-team-lead').value = '';
+        }
+    });
+    </script>
+  
+<script>
+    function calculateValues() {
+        const totalPriceInput = document.querySelector('input[name="total_price"]');
+        const sum_amountInput = document.querySelector('input[name="sum_amount"]');
+        sum_amountInput.value = totalPriceInput.value;
+    }
+</script>
+
+  {% endblock %}
+  

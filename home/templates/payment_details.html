@@ -1,0 +1,50 @@
+
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<hr>
+<div class="container">
+    <h3 class="text-center">Payment Details</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th scope="col">S.N.</th>
+                <th scope="col">Te_Leader</th>
+                <th scope="col">Associate</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Project</th>
+                <th scope="col">Platform</th>
+                <th scope="col">Username</th>                
+                <th scope="col">price</th>
+                <th scope="col">Leads</th>
+                <th scope="col">Start_Date</th>
+                <th scope="col">End_Date</th>
+                <th scope="col">Create_Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for pay in payment %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ pay.records.team_leader_name }}</td>
+                <td>{{ pay.records.associate_name }}</td>
+                <td>{{ pay.records.mobile }}</td>
+                <td>{{ pay.project.project_name }}</td>
+                <td>{{ pay.platform.platform_name }}</td>
+                <td>{{ pay.records.username }}</td>
+                <td>{{ pay.total_amount }}</td> <!-- Change from pay.records.total_price to pay.total_amount -->
+                <td>{{ pay.leads }}</td> <!-- Change from pay.records.leads to pay.leads -->
+                <td>{{ pay.start_date }}</td> <!-- Change from pay.records.start_date to pay.start_date -->
+                <td>{{ pay.end_date }}</td> <!-- Change from pay.records.end_date to pay.end_date -->
+                <td>{{ pay.created_date }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
